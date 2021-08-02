@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.1)
 
 project(bitmask)
 
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    set(BITMASK_MASTER_PROJECT ON)
+endif()
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -9,7 +13,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wpedantic -Wall")
 endif()
 
-enable_testing()
+option(BUILD_TESTS "Build tests" ${BITMASK_MASTER_PROJECT})
 
 include(GNUInstallDirs)
 
@@ -29,4 +33,7 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(EXPORT bitmaskConfig DESTINATION share/bitmask/cmake)
 export(TARGETS bitmask FILE bitmaskConfig.cmake)
 
-add_subdirectory(test)
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()
